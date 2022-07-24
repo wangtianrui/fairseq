@@ -117,7 +117,7 @@ class AudioPretrainingTask(FairseqTask):
         """Setup the task (e.g., load dictionaries).
 
         Args:
-            cfg (AudioPretrainingConfig): configuration of this task
+            cfg (AudioPretrainingConfig): configuration of this task，这里会先调用上面的
         """
 
         return cls(cfg)

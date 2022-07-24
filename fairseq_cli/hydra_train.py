@@ -5,8 +5,9 @@
 # LICENSE file in the root directory of this source tree.
 
 import logging
-import os
-
+import os, sys
+sys.path.append(os.path.abspath(os.path.join(os.getcwd())))
+# print(sys.path)
 import hydra
 import torch
 from hydra.core.hydra_config import HydraConfig
@@ -28,7 +29,7 @@ def hydra_main(cfg: FairseqConfig) -> float:
 
 
 def _hydra_main(cfg: FairseqConfig, **kwargs) -> float:
-    add_defaults(cfg)
+    add_defaults(cfg)  # 补全默认的参数
 
     if cfg.common.reset_logging:
         reset_logging()  # Hydra hijacks logging, fix that
@@ -49,7 +50,7 @@ def _hydra_main(cfg: FairseqConfig, **kwargs) -> float:
 
     try:
         if cfg.common.profile:
-            with torch.cuda.profiler.profile():
+            with torch.cuda.profiler.profile(): # 追踪
                 with torch.autograd.profiler.emit_nvtx():
                     distributed_utils.call_main(cfg, pre_main, **kwargs)
         else:

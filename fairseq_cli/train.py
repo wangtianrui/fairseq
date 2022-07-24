@@ -303,7 +303,7 @@ def train(
     )
     progress.update_config(_flatten_config(cfg))
 
-    trainer.begin_epoch(epoch_itr.epoch)
+    trainer.begin_epoch(epoch_itr.epoch) # 设置epoch
 
     valid_subsets = cfg.dataset.valid_subset.split(",")
     should_stop = False

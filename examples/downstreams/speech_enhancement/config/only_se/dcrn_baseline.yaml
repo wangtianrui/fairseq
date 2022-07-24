@@ -1,0 +1,56 @@
+common:
+  fp16: false
+  log_format: json
+  log_interval: 200
+
+checkpoint:
+  save_interval: 50
+  save_interval_updates: 10000
+  keep_interval_updates: 1
+  no_epoch_checkpoints: true
+  best_checkpoint_metric: si_snr
+
+task:
+  _name: speech_enhancement
+  data: /data_home/
+  sample_rate: 16000
+  sample_dur: 5.0
+
+dataset:
+  num_workers: 8
+  max_tokens: 2560000 # 16000*5*32
+  skip_invalid_size_inputs_valid_test: true
+  validate_after_updates: 10000
+  validate_interval: 50
+  valid_subset: dev
+
+distributed_training:
+  ddp_backend: legacy_ddp
+  distributed_world_size: 0 # 1张卡
+
+criterion:
+  _name: speechenhancement_loss
+  loss_name: si_snr
+
+optimizer:
+  _name: adam
+  adam_betas: (0.9,0.98)
+  adam_eps: 1e-08
+
+optimization:
+  max_update: 3000 # 
+  max_epoch: 100 # 和max_update看谁小
+  lr: [0.001]
+
+lr_scheduler:
+  _name: polynomial_decay
+  warmup_updates: 200 # lr到达顶峰
+
+model:
+  _name: dcrn
+  rnn_hidden: 128
+  win_len: 512
+  hop_len: 128
+  fft_len: 512
+  kernel_size: 5
+  kernel_num: 16, 32, 64, 128, 128, 128

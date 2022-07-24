@@ -12,6 +12,7 @@ checkpoint:
 
 task:
   _name: audio_pretraining
+  # manifest_path = os.path.join(data_path, "{}.tsv".format(split))
   data: ???
   max_sample_size: 250000
   min_sample_size: 32000
@@ -19,7 +20,7 @@ task:
 
 dataset:
   num_workers: 6
-  max_tokens: 1400000
+  max_tokens: 1400000 # 靠这个来限制batch，这里的token指的采样点数量
   skip_invalid_size_inputs_valid_test: true
 
 distributed_training:
@@ -33,7 +34,7 @@ criterion:
   loss_weights: [0.1, 10]
 
 optimization:
-  max_update: 400000
+  max_update: 400000 # 这个来控制的更新次数
   lr: [0.0005]
 
 optimizer:

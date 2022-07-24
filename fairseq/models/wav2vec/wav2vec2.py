@@ -46,8 +46,8 @@ class Wav2Vec2Config(FairseqDataclass):
         default="default",
         metadata={
             "help": "mode for feature extractor. default has a single group norm with d "
-            "groups in the first conv block, whereas layer_norm has layer norms in "
-            "every block (meant to use with normalize=True)"
+                    "groups in the first conv block, whereas layer_norm has layer norms in "
+                    "every block (meant to use with normalize=True)"
         },
     )
     encoder_layers: int = field(
@@ -94,7 +94,7 @@ class Wav2Vec2Config(FairseqDataclass):
         default=0,
         metadata={
             "help": "project final representations and targets to this many dimensions."
-            "set to encoder_embed_dim is <= 0"
+                    "set to encoder_embed_dim is <= 0"
         },
     )
     layer_norm_first: bool = field(
@@ -104,7 +104,7 @@ class Wav2Vec2Config(FairseqDataclass):
         default="[(512, 10, 5)] + [(512, 3, 2)] * 4 + [(512,2,2)] + [(512,2,2)]",
         metadata={
             "help": "string describing convolutional feature extraction layers in form of a python list that contains "
-            "[(dim, kernel_size, stride), ...]"
+                    "[(dim, kernel_size, stride), ...]"
         },
     )
     conv_bias: bool = field(
@@ -150,7 +150,7 @@ class Wav2Vec2Config(FairseqDataclass):
         default=0,
         metadata={
             "help": "if > 0, uses this dimensionality for latent variables. "
-            "otherwise uses final_dim / latent_groups"
+                    "otherwise uses final_dim / latent_groups"
         },
     )
 
@@ -166,7 +166,7 @@ class Wav2Vec2Config(FairseqDataclass):
         default=0,
         metadata={
             "help": "secondary mask argument (used for more complex distributions), "
-            "see help in compute_mask_indices"
+                    "see help in compute_mask_indices"
         },
     )
     no_mask_overlap: bool = field(
@@ -180,7 +180,7 @@ class Wav2Vec2Config(FairseqDataclass):
         default=True,
         metadata={
             "help": "whether to number of masked timesteps must be the same across all "
-            "examples in a batch"
+                    "examples in a batch"
         },
     )
     mask_dropout: float = field(
@@ -204,7 +204,7 @@ class Wav2Vec2Config(FairseqDataclass):
         default=0,
         metadata={
             "help": "secondary mask argument (used for more complex distributions), "
-            "see help in compute_mask_indicesh"
+                    "see help in compute_mask_indicesh"
         },
     )
     no_mask_channel_overlap: bool = field(
@@ -249,7 +249,7 @@ class Wav2Vec2Config(FairseqDataclass):
         default=(2, 0.5, 0.999995),
         metadata={
             "help": "temperature for latent variable sampling. "
-            "can be tuple of 3 values (start, end, decay)"
+                    "can be tuple of 3 values (start, end, decay)"
         },
     )
     max_positions: int = field(default=100000, metadata={"help": "Max positions"})
@@ -412,11 +412,11 @@ class Wav2Vec2Model(BaseFairseqModel):
         return cls(cfg)
 
     def apply_mask(
-        self,
-        x,
-        padding_mask,
-        mask_indices=None,
-        mask_channel_indices=None,
+            self,
+            x,
+            padding_mask,
+            mask_indices=None,
+            mask_channel_indices=None,
     ):
         B, T, C = x.shape
 
@@ -433,9 +433,9 @@ class Wav2Vec2Model(BaseFairseqModel):
             )
             mask_channel_indices = (
                 torch.from_numpy(mask_channel_indices)
-                .to(x.device)
-                .unsqueeze(1)
-                .expand(-1, T, -1)
+                    .to(x.device)
+                    .unsqueeze(1)
+                    .expand(-1, T, -1)
             )
             x[mask_channel_indices] = 0
 
@@ -473,9 +473,9 @@ class Wav2Vec2Model(BaseFairseqModel):
                 )
                 mask_channel_indices = (
                     torch.from_numpy(mask_channel_indices)
-                    .to(x.device)
-                    .unsqueeze(1)
-                    .expand(-1, T, -1)
+                        .to(x.device)
+                        .unsqueeze(1)
+                        .expand(-1, T, -1)
                 )
             x = index_put(x, mask_channel_indices, 0)
 
@@ -493,14 +493,14 @@ class Wav2Vec2Model(BaseFairseqModel):
         cross_high = tsz * bsz
         high = tsz - (padding_count or 0)
         with torch.no_grad():
-            assert high > 1, f"{bsz,tsz,fsz}"
+            assert high > 1, f"{bsz, tsz, fsz}"
 
             if self.n_negatives > 0:
                 tszs = (
                     buffered_arange(num)
-                    .unsqueeze(-1)
-                    .expand(-1, self.n_negatives)
-                    .flatten()
+                        .unsqueeze(-1)
+                        .expand(-1, self.n_negatives)
+                        .flatten()
                 )
 
                 neg_idxs = torch.randint(
@@ -511,9 +511,9 @@ class Wav2Vec2Model(BaseFairseqModel):
             if self.cross_sample_negatives > 0:
                 tszs = (
                     buffered_arange(num)
-                    .unsqueeze(-1)
-                    .expand(-1, self.cross_sample_negatives)
-                    .flatten()
+                        .unsqueeze(-1)
+                        .expand(-1, self.cross_sample_negatives)
+                        .flatten()
                 )
 
                 cross_neg_idxs = torch.randint(
@@ -551,7 +551,7 @@ class Wav2Vec2Model(BaseFairseqModel):
 
         if is_xla_tensor(logits) or neg_is_pos.any():
             if not hasattr(self, "_inftensor"):
-                fillval = -float(2**30)
+                fillval = -float(2 ** 30)
                 self._inftensor = (
                     torch.tensor(fillval).to(x.device)
                     if is_xla_tensor(logits)
@@ -579,15 +579,15 @@ class Wav2Vec2Model(BaseFairseqModel):
         return input_lengths.to(torch.long)
 
     def forward(
-        self,
-        source,
-        padding_mask=None,
-        mask=True,
-        features_only=False,
-        layer=None,
-        mask_indices=None,
-        mask_channel_indices=None,
-        padding_count=None,
+            self,
+            source,
+            padding_mask=None,
+            mask=True,
+            features_only=False,
+            layer=None,
+            mask_indices=None,
+            mask_channel_indices=None,
+            padding_count=None,
     ):
 
         if self.feature_grad_mult > 0:
@@ -754,8 +754,8 @@ class Wav2Vec2Model(BaseFairseqModel):
         x = self.compute_preds(x, y, negs)
 
         result = {
-            "x": x,
-            "padding_mask": padding_mask,
+            "x": x,  # N+1,B,T
+            "padding_mask": padding_mask,  # None
             "features_pen": features_pen,
         }
 
@@ -784,11 +784,11 @@ class Wav2Vec2Model(BaseFairseqModel):
         logits = net_output["x"]
         logits = logits.transpose(0, 2)
         logits = logits.reshape(-1, logits.size(-1))
-        return logits
+        return logits  # TxD,B
 
     def get_targets(self, sample, net_output, expand_steps=True):
         x = net_output["x"]
-        return x.new_zeros(x.size(1) * x.size(2), dtype=torch.long)
+        return x.new_zeros(x.size(1) * x.size(2), dtype=torch.long)  # BxT
 
     def get_extra_losses(self, net_output):
         pen = []
@@ -818,24 +818,24 @@ class Wav2Vec2Model(BaseFairseqModel):
 
 class ConvFeatureExtractionModel(nn.Module):
     def __init__(
-        self,
-        conv_layers: List[Tuple[int, int, int]],
-        dropout: float = 0.0,
-        mode: str = "default",
-        conv_bias: bool = False,
+            self,
+            conv_layers: List[Tuple[int, int, int]],
+            dropout: float = 0.0,
+            mode: str = "default",
+            conv_bias: bool = False,
     ):
         super().__init__()
 
         assert mode in {"default", "layer_norm"}
 
         def block(
-            n_in,
-            n_out,
-            k,
-            stride,
-            is_layer_norm=False,
-            is_group_norm=False,
-            conv_bias=False,
+                n_in,
+                n_out,
+                k,
+                stride,
+                is_layer_norm=False,
+                is_group_norm=False,
+                conv_bias=False,
         ):
             def make_conv():
                 conv = nn.Conv1d(n_in, n_out, k, stride=stride, bias=conv_bias)
@@ -843,8 +843,8 @@ class ConvFeatureExtractionModel(nn.Module):
                 return conv
 
             assert (
-                is_layer_norm and is_group_norm
-            ) == False, "layer norm and group norm are exclusive"
+                           is_layer_norm and is_group_norm
+                   ) == False, "layer norm and group norm are exclusive"
 
             if is_layer_norm:
                 return nn.Sequential(
@@ -1008,11 +1008,11 @@ class TransformerEncoder(nn.Module):
         return x, layer_results
 
     def extract_features(
-        self,
-        x,
-        padding_mask=None,
-        tgt_layer=None,
-        min_layer=0,
+            self,
+            x,
+            padding_mask=None,
+            tgt_layer=None,
+            min_layer=0,
     ):
 
         if padding_mask is not None:
@@ -1179,15 +1179,15 @@ class TransformerSentenceEncoderLayer(nn.Module):
     """
 
     def __init__(
-        self,
-        embedding_dim: float = 768,
-        ffn_embedding_dim: float = 3072,
-        num_attention_heads: int = 8,
-        dropout: float = 0.1,
-        attention_dropout: float = 0.1,
-        activation_dropout: float = 0.1,
-        activation_fn: str = "relu",
-        layer_norm_first: bool = False,
+            self,
+            embedding_dim: float = 768,
+            ffn_embedding_dim: float = 3072,
+            num_attention_heads: int = 8,
+            dropout: float = 0.1,
+            attention_dropout: float = 0.1,
+            activation_dropout: float = 0.1,
+            activation_fn: str = "relu",
+            layer_norm_first: bool = False,
     ) -> None:
 
         super().__init__()
@@ -1220,12 +1220,12 @@ class TransformerSentenceEncoderLayer(nn.Module):
         self.final_layer_norm = LayerNorm(self.embedding_dim)
 
     def forward(
-        self,
-        x: torch.Tensor,
-        self_attn_mask: torch.Tensor = None,
-        self_attn_padding_mask: torch.Tensor = None,
-        need_weights: bool = False,
-        att_args=None,
+            self,
+            x: torch.Tensor,
+            self_attn_mask: torch.Tensor = None,
+            self_attn_padding_mask: torch.Tensor = None,
+            need_weights: bool = False,
+            att_args=None,
     ):
         """
         LayerNorm is applied either before or after the self-attention/ffn

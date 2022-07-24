@@ -22,21 +22,20 @@ from fairseq.data.audio.audio_utils import (
 )
 from fairseq.data.text_compressor import TextCompressor, TextCompressionLevel
 
-
 logger = logging.getLogger(__name__)
 
 
 class RawAudioDataset(FairseqDataset):
     def __init__(
-        self,
-        sample_rate,
-        max_sample_size=None,
-        min_sample_size=0,
-        shuffle=True,
-        pad=False,
-        normalize=False,
-        compute_mask_indices=False,
-        **mask_compute_kwargs,
+            self,
+            sample_rate,
+            max_sample_size=None,
+            min_sample_size=0,
+            shuffle=True,
+            pad=False,
+            normalize=False,
+            compute_mask_indices=False,
+            **mask_compute_kwargs,
     ):
         super().__init__()
 
@@ -247,18 +246,18 @@ class RawAudioDataset(FairseqDataset):
 
 class FileAudioDataset(RawAudioDataset):
     def __init__(
-        self,
-        manifest_path,
-        sample_rate,
-        max_sample_size=None,
-        min_sample_size=0,
-        shuffle=True,
-        pad=False,
-        normalize=False,
-        num_buckets=0,
-        compute_mask_indices=False,
-        text_compression_level=TextCompressionLevel.none,
-        **mask_compute_kwargs,
+            self,
+            manifest_path,
+            sample_rate,
+            max_sample_size=None,
+            min_sample_size=0,
+            shuffle=True,
+            pad=False,
+            normalize=False,
+            num_buckets=0,
+            compute_mask_indices=False,
+            text_compression_level=TextCompressionLevel.none,
+            **mask_compute_kwargs,
     ):
         super().__init__(
             sample_rate=sample_rate,
@@ -328,18 +327,18 @@ class FileAudioDataset(RawAudioDataset):
 
 class BinarizedAudioDataset(RawAudioDataset):
     def __init__(
-        self,
-        data_dir,
-        split,
-        sample_rate,
-        max_sample_size=None,
-        min_sample_size=0,
-        shuffle=True,
-        pad=False,
-        normalize=False,
-        num_buckets=0,
-        compute_mask_indices=False,
-        **mask_compute_kwargs,
+            self,
+            data_dir,
+            split,
+            sample_rate,
+            max_sample_size=None,
+            min_sample_size=0,
+            shuffle=True,
+            pad=False,
+            normalize=False,
+            num_buckets=0,
+            compute_mask_indices=False,
+            **mask_compute_kwargs,
     ):
         super().__init__(
             sample_rate=sample_rate,
@@ -371,7 +370,7 @@ class BinarizedAudioDataset(RawAudioDataset):
             for line in f:
                 sz = int(line.rstrip())
                 assert (
-                    sz >= min_sample_size
+                        sz >= min_sample_size
                 ), f"Min sample size is not supported for binarized dataset, but found a sample with size {sz}"
                 self.sizes.append(sz)
 

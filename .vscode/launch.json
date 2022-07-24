@@ -1,0 +1,25 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+    
+        {
+            "cwd": "F:\\python_programes\\fairseq",
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "python": "F:\\anaconda\\envs\\python36\\python.exe",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--config-dir",
+                "F:\\python_programes\\fairseq\\examples\\downstreams\\speech_enhancement\\config\\only_se",
+                "--config-name",
+                "dcrn_baseline"
+            ]
+        }
+    ]
+}
